@@ -1,13 +1,18 @@
+var _a;
 var currentPage = 1;
 var limit = 5;
+var loadedUsers = [];
 document.addEventListener('DOMContentLoaded', function () {
     loadUsers(currentPage);
 });
 function loadUsers(page) {
-    fetch("/users/api?page=".concat(page, "&limit=").concat(limit))
+    var domain = document.getElementById('filterDomain').value;
+    var query = "?page=".concat(page, "&limit=").concat(limit).concat(domain ? "&domain=".concat(encodeURIComponent(domain)) : '');
+    fetch("/users/api".concat(query))
         .then(function (res) { return res.json(); })
         .then(function (data) {
-        displayUsers(data.data);
+        loadedUsers = data.data;
+        displayUsers(loadedUsers);
         setupPagination(data.totalPages || 1);
     })
         .catch(function (err) { return console.error('❌ Fetch error:', err); });
@@ -52,3 +57,10 @@ function setupPagination(totalPages) {
     pagination.appendChild(document.createTextNode(" Page ".concat(currentPage, " of ").concat(totalPages, " ")));
     pagination.appendChild(next);
 }
+function applyFilters() {
+    currentPage = 1;
+    loadUsers(currentPage);
+}
+(_a = document.getElementById('filterDomain')) === null || _a === void 0 ? void 0 : _a.addEventListener('change', function () {
+    applyFilters();
+});

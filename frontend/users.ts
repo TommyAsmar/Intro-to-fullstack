@@ -1,15 +1,20 @@
 let currentPage = 1;
 const limit = 5;
 
+let loadedUsers: any[] = [];
 document.addEventListener('DOMContentLoaded', () => {
   loadUsers(currentPage);
 });
 
-function loadUsers(page) {
-  fetch(`/users/api?page=${page}&limit=${limit}`)
+function loadUsers(page: number) {
+  const domain = (document.getElementById('filterDomain') as HTMLSelectElement).value;
+  const query = `?page=${page}&limit=${limit}${domain ? `&domain=${encodeURIComponent(domain)}` : ''}`;
+
+  fetch(`/users/api${query}`)
     .then(res => res.json())
     .then(data => {
-      displayUsers(data.data);
+      loadedUsers = data.data;
+      displayUsers(loadedUsers);
       setupPagination(data.totalPages || 1);
     })
     .catch(err => console.error('❌ Fetch error:', err));
@@ -62,3 +67,13 @@ function setupPagination(totalPages: number) {
   pagination.appendChild(document.createTextNode(` Page ${currentPage} of ${totalPages} `));
   pagination.appendChild(next);
 }
+
+
+function applyFilters() {
+  currentPage = 1; 
+  loadUsers(currentPage);
+}
+
+document.getElementById('filterDomain')?.addEventListener('change', () => {
+  applyFilters();
+});

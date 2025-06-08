@@ -17,19 +17,32 @@ usersRouter.get('/', (req, res) => {
 });
 
 usersRouter.get('/api', async (req, res) => {
-   const page = parseInt(req.query.page as string) || 1;
+  const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 5;
   const offset = (page - 1) * limit;
-  const [rows] = await db.query('SELECT * FROM users LIMIT ? OFFSET ?', 
-    [limit, offset]);
+  const domain = (req.query.domain as string) || '';
 
-  const [countRows] = await db.query('SELECT COUNT(*) as count FROM users');
+  let baseQuery = 'SELECT * FROM users';
+  let countQuery = 'SELECT COUNT(*) as count FROM users';
+  const params: any[] = [];
+
+  if (domain) {
+    baseQuery += ' WHERE email LIKE ?';
+    countQuery += ' WHERE email LIKE ?';
+    params.push(`%${domain}`);
+  }
+
+  baseQuery += ' LIMIT ? OFFSET ?';
+  params.push(limit, offset);
+
+  const [rows] = await db.query(baseQuery, params);
+  const [countRows] = await db.query(countQuery, domain ? [`%${domain}`] : []);
   const total = (countRows as any)[0].count;
 
   res.json({
     data: rows,
     currentPage: page,
-    totalPages: Math.ceil(total / limit)
+    totalPages: Math.ceil(total / limit),
   });
 });
 

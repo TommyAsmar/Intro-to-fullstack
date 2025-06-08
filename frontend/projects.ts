@@ -1,21 +1,24 @@
 let currentPage = 1;
 const limit = 5;
+let currentSort = 'asc'; // default sort order
 
 document.addEventListener('DOMContentLoaded', () => {
   loadProjects(currentPage);
+  document.getElementById('sortSelect')?.addEventListener('change', applySort);
 });
 
 function loadProjects(page: number) {
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get('userId');
+
   const url = userId
-    ? `/projects/api/user/${userId}?page=${page}&limit=${limit}`
-    : `/projects/api?page=${page}&limit=${limit}`;
+    ? `/projects/api/user/${userId}?page=${page}&limit=${limit}&sort=${currentSort}`
+    : `/projects/api?page=${page}&limit=${limit}&sort=${currentSort}`;
 
   fetch(url)
     .then(res => res.json())
     .then(data => {
-      const projects = data.data || data; // handle both paginated and flat list
+      const projects = data.data || data;
       displayProjects(projects);
       setupPagination(data.totalPages || 1);
     })
@@ -25,7 +28,6 @@ function loadProjects(page: number) {
 function displayProjects(projects: any[]) {
   const projectList = document.getElementById('projectList')!;
   projectList.innerHTML = '';
-   console.log("✅ Received projects:", projects); 
 
   projects.forEach(project => {
     const li = document.createElement('li');
@@ -57,4 +59,11 @@ function setupPagination(totalPages: number) {
   pagination.appendChild(prev);
   pagination.appendChild(document.createTextNode(` Page ${currentPage} of ${totalPages} `));
   pagination.appendChild(next);
+}
+
+function applySort() {
+  const select = document.getElementById('sortSelect') as HTMLSelectElement;
+  currentSort = select.value;
+  currentPage = 1;
+  loadProjects(currentPage);
 }
