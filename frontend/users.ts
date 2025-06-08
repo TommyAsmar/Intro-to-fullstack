@@ -9,8 +9,8 @@ function loadUsers(page) {
   fetch(`/users/api?page=${page}&limit=${limit}`)
     .then(res => res.json())
     .then(data => {
-      displayUsers(data);
-      setupPagination(data.length);
+      displayUsers(data.data);
+      setupPagination(data.totalPages || 1);
     })
     .catch(err => console.error('❌ Fetch error:', err));
 }
@@ -20,12 +20,25 @@ function displayUsers(users) {
   userList.innerHTML = '';
   users.forEach(user => {
     const li = document.createElement('li');
-    li.textContent = `${user.name} (${user.email})`;
+    li.classList.add('user-item');
+
+    const info = document.createElement('span');
+    info.textContent = `${user.name} (${user.email})`;
+
+    const btn = document.createElement('button');
+    btn.textContent = 'View Projects';
+    btn.classList.add('view-projects-btn');
+    btn.onclick = () => {
+      window.location.href = `projects.html?userId=${user.id}`;
+    };
+
+    li.appendChild(info);
+    li.appendChild(btn);
     userList.appendChild(li);
   });
 }
 
-function setupPagination(count) {
+function setupPagination(totalPages: number) {
   const pagination = document.getElementById('pagination');
   pagination.innerHTML = '';
 
@@ -39,13 +52,13 @@ function setupPagination(count) {
 
   const next = document.createElement('button');
   next.textContent = 'Next';
-  next.disabled = count < limit;
+  next.disabled = currentPage >= totalPages;
   next.onclick = () => {
     currentPage++;
     loadUsers(currentPage);
   };
 
   pagination.appendChild(prev);
-  pagination.appendChild(document.createTextNode(` Page ${currentPage} `));
+  pagination.appendChild(document.createTextNode(` Page ${currentPage} of ${totalPages} `));
   pagination.appendChild(next);
 }

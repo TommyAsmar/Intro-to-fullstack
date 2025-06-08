@@ -4,24 +4,31 @@ document.addEventListener('DOMContentLoaded', function () {
     loadProjects(currentPage);
 });
 function loadProjects(page) {
-    fetch("/projects/api?page=".concat(page, "&limit=").concat(limit))
+    var urlParams = new URLSearchParams(window.location.search);
+    var userId = urlParams.get('userId');
+    var url = userId
+        ? "/projects/api/user/".concat(userId, "?page=").concat(page, "&limit=").concat(limit)
+        : "/projects/api?page=".concat(page, "&limit=").concat(limit);
+    fetch(url)
         .then(function (res) { return res.json(); })
         .then(function (data) {
-        displayProjects(data);
-        setupPagination(data.length);
+        var projects = data.data || data; // handle both paginated and flat list
+        displayProjects(projects);
+        setupPagination(data.totalPages || 1);
     })
         .catch(function (err) { return console.error('❌ Fetch error:', err); });
 }
-function displayProjects(users) {
+function displayProjects(projects) {
     var projectList = document.getElementById('projectList');
     projectList.innerHTML = '';
-    users.forEach(function (user) {
+    console.log("✅ Received projects:", projects);
+    projects.forEach(function (project) {
         var li = document.createElement('li');
-        li.textContent = "".concat(user.name, " (").concat(user.email, ")");
+        li.textContent = "".concat(project.name, " (User ID: ").concat(project.userId, ")");
         projectList.appendChild(li);
     });
 }
-function setupPagination(count) {
+function setupPagination(totalPages) {
     var pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
     var prev = document.createElement('button');
@@ -33,12 +40,12 @@ function setupPagination(count) {
     };
     var next = document.createElement('button');
     next.textContent = 'Next';
-    next.disabled = count < limit;
+    next.disabled = currentPage >= totalPages;
     next.onclick = function () {
         currentPage++;
         loadProjects(currentPage);
     };
     pagination.appendChild(prev);
-    pagination.appendChild(document.createTextNode(" Page ".concat(currentPage, " ")));
+    pagination.appendChild(document.createTextNode(" Page ".concat(currentPage, " of ").concat(totalPages, " ")));
     pagination.appendChild(next);
 }

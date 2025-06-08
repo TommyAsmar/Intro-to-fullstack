@@ -23,7 +23,14 @@ usersRouter.get('/api', async (req, res) => {
   const [rows] = await db.query('SELECT * FROM users LIMIT ? OFFSET ?', 
     [limit, offset]);
 
-  res.json(rows);
+  const [countRows] = await db.query('SELECT COUNT(*) as count FROM users');
+  const total = (countRows as any)[0].count;
+
+  res.json({
+    data: rows,
+    currentPage: page,
+    totalPages: Math.ceil(total / limit)
+  });
 });
 
 usersRouter.get('/:id/projects', async (req, res) => {
