@@ -1,26 +1,51 @@
-console.log("✅ projects.ts is running");
+let currentPage = 1;
+const limit = 5;
 
-function fetchAllProjects() {
-  fetch('/projects/api')
+document.addEventListener('DOMContentLoaded', () => {
+  loadProjects(currentPage);
+});
+
+function loadProjects(page) {
+  fetch(`/projects/api?page=${page}&limit=${limit}`)
     .then(res => res.json())
-    .then(projects => {
-      const list = document.getElementById('projectList')!;
-      list.innerHTML = '';
-
-      if (projects.length === 0) {
-        list.innerHTML = '<li>No projects found.</li>';
-        return;
-      }
-
-      projects.forEach((project: any) => {
-        const li = document.createElement('li');
-        li.textContent = project.name || JSON.stringify(project);
-        list.appendChild(li);
-      });
+    .then(data => {
+      displayProjects(data);
+      setupPagination(data.length);
     })
-    .catch(err => {
-      console.error("❌ Error loading projects:", err);
-    });
+    .catch(err => console.error('❌ Fetch error:', err));
 }
 
-fetchAllProjects();
+function displayProjects(users) {
+  const projectList = document.getElementById('projectList');
+  projectList.innerHTML = '';
+  users.forEach(user => {
+    const li = document.createElement('li');
+    li.textContent = `${user.name} (${user.email})`;
+    projectList.appendChild(li);
+  });
+}
+
+function setupPagination(count) {
+  const pagination = document.getElementById('pagination');
+  pagination.innerHTML = '';
+
+  const prev = document.createElement('button');
+  prev.textContent = 'Prev';
+  prev.disabled = currentPage === 1;
+  prev.onclick = () => {
+    currentPage--;
+    loadProjects(currentPage);
+  };
+
+  const next = document.createElement('button');
+  next.textContent = 'Next';
+  next.disabled = count < limit;
+  next.onclick = () => {
+    currentPage++;
+    loadProjects(currentPage);
+  };
+
+  pagination.appendChild(prev);
+  pagination.appendChild(document.createTextNode(` Page ${currentPage} `));
+  pagination.appendChild(next);
+}

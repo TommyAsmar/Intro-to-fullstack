@@ -1,22 +1,44 @@
-console.log("✅ projects.ts is running");
-function fetchAllProjects() {
-    fetch('/projects/api')
+var currentPage = 1;
+var limit = 5;
+document.addEventListener('DOMContentLoaded', function () {
+    loadProjects(currentPage);
+});
+function loadProjects(page) {
+    fetch("/projects/api?page=".concat(page, "&limit=").concat(limit))
         .then(function (res) { return res.json(); })
-        .then(function (projects) {
-        var list = document.getElementById('projectList');
-        list.innerHTML = '';
-        if (projects.length === 0) {
-            list.innerHTML = '<li>No projects found.</li>';
-            return;
-        }
-        projects.forEach(function (project) {
-            var li = document.createElement('li');
-            li.textContent = project.name || JSON.stringify(project);
-            list.appendChild(li);
-        });
+        .then(function (data) {
+        displayProjects(data);
+        setupPagination(data.length);
     })
-        .catch(function (err) {
-        console.error("❌ Error loading projects:", err);
+        .catch(function (err) { return console.error('❌ Fetch error:', err); });
+}
+function displayProjects(users) {
+    var projectList = document.getElementById('projectList');
+    projectList.innerHTML = '';
+    users.forEach(function (user) {
+        var li = document.createElement('li');
+        li.textContent = "".concat(user.name, " (").concat(user.email, ")");
+        projectList.appendChild(li);
     });
 }
-fetchAllProjects();
+function setupPagination(count) {
+    var pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+    var prev = document.createElement('button');
+    prev.textContent = 'Prev';
+    prev.disabled = currentPage === 1;
+    prev.onclick = function () {
+        currentPage--;
+        loadProjects(currentPage);
+    };
+    var next = document.createElement('button');
+    next.textContent = 'Next';
+    next.disabled = count < limit;
+    next.onclick = function () {
+        currentPage++;
+        loadProjects(currentPage);
+    };
+    pagination.appendChild(prev);
+    pagination.appendChild(document.createTextNode(" Page ".concat(currentPage, " ")));
+    pagination.appendChild(next);
+}
