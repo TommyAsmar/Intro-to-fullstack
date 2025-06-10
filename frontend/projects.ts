@@ -2,12 +2,16 @@ let currentPage = 1;
 const limit = 5;
 let currentSort = 'asc'; // default sort order
 let loadedProjects: any[] = [];
+let projectsSearchTimeout: NodeJS.Timeout;
 
 document.addEventListener('DOMContentLoaded', () => {
   loadProjects(currentPage);
   document.getElementById('sortSelect')?.addEventListener('change', applySort);
   document.getElementById('searchInput')?.addEventListener('input', () => {
-    applyProjectSearch();
+    clearTimeout(projectsSearchTimeout);
+    projectsSearchTimeout = setTimeout(() => {
+      applyProjectSearch();
+    }, 300); // 300ms debounce delay
   });
 });
 

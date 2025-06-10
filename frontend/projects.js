@@ -38,12 +38,16 @@ var currentPage = 1;
 var limit = 5;
 var currentSort = 'asc'; // default sort order
 var loadedProjects = [];
+var projectsSearchTimeout;
 document.addEventListener('DOMContentLoaded', function () {
     var _a, _b;
     loadProjects(currentPage);
     (_a = document.getElementById('sortSelect')) === null || _a === void 0 ? void 0 : _a.addEventListener('change', applySort);
     (_b = document.getElementById('searchInput')) === null || _b === void 0 ? void 0 : _b.addEventListener('input', function () {
-        applyProjectSearch();
+        clearTimeout(projectsSearchTimeout);
+        projectsSearchTimeout = setTimeout(function () {
+            applyProjectSearch();
+        }, 300);
     });
 });
 function loadProjects(page) {

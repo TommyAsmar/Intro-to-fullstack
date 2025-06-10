@@ -1,5 +1,6 @@
 let usersCurrentPage = 1;
 const usersLimit = 5;
+let searchTimeout: NodeJS.Timeout;
 
 let loadedUsers: any[] = [];
 document.addEventListener('DOMContentLoaded', () => {
@@ -88,6 +89,9 @@ document.getElementById('filterDomain')?.addEventListener('change', () => {
 });
 
 document.getElementById('searchInput')?.addEventListener('input', () => {
-  usersCurrentPage = 1;
-  loadUsers(usersCurrentPage);
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    usersCurrentPage = 1;
+    loadUsers(usersCurrentPage);
+  }, 300); // 300ms debounce delay
 });

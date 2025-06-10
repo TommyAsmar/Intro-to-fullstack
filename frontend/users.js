@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _a, _b;
 var usersCurrentPage = 1;
 var usersLimit = 5;
+var searchTimeout;
 var loadedUsers = [];
 document.addEventListener('DOMContentLoaded', function () {
     loadUsers(usersCurrentPage);
@@ -127,6 +128,9 @@ function applyFilters() {
     applyFilters();
 });
 (_b = document.getElementById('searchInput')) === null || _b === void 0 ? void 0 : _b.addEventListener('input', function () {
-    usersCurrentPage = 1;
-    loadUsers(usersCurrentPage);
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function () {
+        usersCurrentPage = 1;
+        loadUsers(usersCurrentPage);
+    }, 300); // 300ms debounce delay
 });
