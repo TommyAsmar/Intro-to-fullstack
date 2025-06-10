@@ -10,30 +10,32 @@
     />
   </head>
   <body>
-    <div class="header-bar">
-      <h1>Users</h1>
-      <select id="filterDomain">
-        <option value="">All Domains</option>
-        <option value="@example.com">@example.com</option>
-        <option value="@gmail.com">@gmail.com</option>
-      </select>
-      <div class="search-bar">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Search users..."
-        />
+    <div class="container">
+      <div class="header-bar">
+        <h1>Users</h1>
+        <select id="filterDomain">
+          <option value="">All Domains</option>
+          <option value="@example.com">@example.com</option>
+          <option value="@gmail.com">@gmail.com</option>
+        </select>
+        <div class="search-bar">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search users..."
+          />
+        </div>
       </div>
+      <div
+        id="loading"
+        class="fa-spinner-wrapper"
+        style="display: none"
+      >
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+      </div>
+      <ul id="userList"></ul>
+      <div id="pagination" style="margin-top: 10px"></div>
     </div>
-    <div
-      id="loading"
-      class="fa-spinner-wrapper"
-      style="display: none"
-    >
-      <i class="fas fa-spinner fa-spin fa-2x"></i>
-    </div>
-    <ul id="userList"></ul>
-    <div id="pagination" style="margin-top: 10px"></div>
 
     <script type="module" src="users.js"></script>
   </body>

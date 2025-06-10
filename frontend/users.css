@@ -133,3 +133,47 @@ li {
   border-color: #007bff;
   box-shadow: 0 0 3px rgba(0, 123, 255, 0.4);
 }
+
+@media (max-width: 600px) {
+  body {
+    padding: 20px;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .search-bar {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  #searchInput {
+    width: 100%;
+  }
+
+  .user-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .view-projects-btn {
+    width: 100%;
+  }
+
+  #pagination {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #pagination button {
+    width: 100%;
+  }
+}
