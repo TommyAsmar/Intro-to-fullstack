@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sortSelect')?.addEventListener('change', applySort);
 });
 
-function loadProjects(page: number) {
+async function loadProjects(page: number) {
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get('userId');
 
@@ -15,15 +15,17 @@ function loadProjects(page: number) {
     ? `/projects/api/user/${userId}?page=${page}&limit=${limit}&sort=${currentSort}`
     : `/projects/api?page=${page}&limit=${limit}&sort=${currentSort}`;
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      const projects = data.data || data;
-      displayProjects(projects);
-      setupProjectPagination(data.totalPages || 1);
-    })
-    .catch(err => console.error('❌ Fetch error:', err));
-}
+    try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const projects = data.data || data;
+    displayProjects(projects);
+    setupProjectPagination(data.totalPages || 1);
+   }
+    catch (err) {
+     console.error('❌ Fetch error:', err);
+   }
+  }
 
 function displayProjects(projects: any[]) {
   const projectList = document.getElementById('projectList')!;

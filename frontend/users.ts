@@ -6,18 +6,19 @@ document.addEventListener('DOMContentLoaded', () => {
   loadUsers(usersCurrentPage);
 });
 
-function loadUsers(page: number) {
+async function loadUsers(page: number) {
   const domain = (document.getElementById('filterDomain') as HTMLSelectElement).value;
   const query = `?page=${page}&usersLimit=${usersLimit}${domain ? `&domain=${encodeURIComponent(domain)}` : ''}`;
 
-  fetch(`/users/api${query}`)
-    .then(res => res.json())
-    .then(data => {
-      loadedUsers = data.data;
-      displayUsers(loadedUsers);
-      setupPagination(data.totalPages || 1);
-    })
-    .catch(err => console.error('❌ Fetch error:', err));
+  try {
+    const res = await fetch(`/users/api${query}`);
+    const data = await res.json();
+    loadedUsers = data.data;
+    displayUsers(loadedUsers);
+    setupPagination(data.totalPages || 1);
+  } catch (err) {
+    console.error('❌ Fetch error:', err);
+  }
 }
 
 function displayUsers(users) {
