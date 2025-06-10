@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _a;
+var _a, _b;
 var usersCurrentPage = 1;
 var usersLimit = 5;
 var loadedUsers = [];
@@ -43,12 +43,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 function loadUsers(page) {
     return __awaiter(this, void 0, void 0, function () {
-        var domain, query, loading, res, data, err_1;
+        var search, domain, query, loading, res, data, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    search = document.getElementById('searchInput').value.trim();
                     domain = document.getElementById('filterDomain').value;
-                    query = "?page=".concat(page, "&usersLimit=").concat(usersLimit).concat(domain ? "&domain=".concat(encodeURIComponent(domain)) : '');
+                    query = "?page=".concat(page, "&usersLimit=").concat(usersLimit, " ") +
+                        (domain ? "&domain=".concat(encodeURIComponent(domain)) : '') +
+                        (search ? "&search=".concat(encodeURIComponent(search)) : '');
                     loading = document.getElementById('loading');
                     loading.style.display = 'flex';
                     _a.label = 1;
@@ -122,4 +125,8 @@ function applyFilters() {
 }
 (_a = document.getElementById('filterDomain')) === null || _a === void 0 ? void 0 : _a.addEventListener('change', function () {
     applyFilters();
+});
+(_b = document.getElementById('searchInput')) === null || _b === void 0 ? void 0 : _b.addEventListener('input', function () {
+    usersCurrentPage = 1;
+    loadUsers(usersCurrentPage);
 });

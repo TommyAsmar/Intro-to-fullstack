@@ -7,8 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadUsers(page: number) {
+  const search = (document.getElementById('searchInput') as HTMLInputElement).value.trim();
   const domain = (document.getElementById('filterDomain') as HTMLSelectElement).value;
-  const query = `?page=${page}&usersLimit=${usersLimit}${domain ? `&domain=${encodeURIComponent(domain)}` : ''}`;
+  const query = `?page=${page}&usersLimit=${usersLimit} `+  
+                (domain ? `&domain=${encodeURIComponent(domain)}` : '') +
+                (search ? `&search=${encodeURIComponent(search)}` : '');
 
   const loading = document.getElementById('loading')!;
   loading.style.display = 'flex';
@@ -82,4 +85,9 @@ function applyFilters() {
 
 document.getElementById('filterDomain')?.addEventListener('change', () => {
   applyFilters();
+});
+
+document.getElementById('searchInput')?.addEventListener('input', () => {
+  usersCurrentPage = 1;
+  loadUsers(usersCurrentPage);
 });

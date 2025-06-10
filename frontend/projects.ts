@@ -1,10 +1,14 @@
 let currentPage = 1;
 const limit = 5;
 let currentSort = 'asc'; // default sort order
+let loadedProjects: any[] = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   loadProjects(currentPage);
   document.getElementById('sortSelect')?.addEventListener('change', applySort);
+  document.getElementById('searchInput')?.addEventListener('input', () => {
+    applyProjectSearch();
+  });
 });
 
 async function loadProjects(page: number) {
@@ -22,7 +26,8 @@ async function loadProjects(page: number) {
     const res = await fetch(url);
     const data = await res.json();
     const projects = data.data || data;
-    displayProjects(projects);
+    loadedProjects = projects;
+    displayProjects(loadedProjects);
     setupProjectPagination(data.totalPages || 1);
    }
     catch (err) {
@@ -73,4 +78,14 @@ function applySort() {
   currentSort = select.value;
   currentPage = 1;
   loadProjects(currentPage);
+}
+
+function applyProjectSearch() {
+  const searchTerm = (document.getElementById('searchInput') as HTMLInputElement).value.toLowerCase();
+
+  const filtered = loadedProjects.filter(project =>
+    project.name.toLowerCase().includes(searchTerm)
+  );
+
+  displayProjects(filtered);
 }

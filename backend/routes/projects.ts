@@ -20,13 +20,20 @@ projectsRouter.get('/api', async (req, res) => {
   const limit = parseInt(req.query.limit as string) || 5;
   const offset = (page - 1) * limit;
   const sort = req.query.sort === 'desc' ? 'DESC' : 'ASC';
+  const search = (req.query.search as string) || '';
+
+  const searchQuery = `%${search}%`;
 
   const [rows] = await db.query(
-    `SELECT * FROM projects ORDER BY name ${sort} LIMIT ? OFFSET ?`,
-    [limit, offset]
+    `SELECT * FROM projects WHERE name LIKE ? ORDER BY name ${sort} LIMIT ? OFFSET ?`,
+    [searchQuery, limit, offset]
   );
 
-  const [countRows] = await db.query('SELECT COUNT(*) as count FROM projects');
+  const [countRows] = await db.query(
+    'SELECT COUNT(*) as count FROM projects WHERE name LIKE ?',
+    [searchQuery]
+  );
+
   const total = (countRows as any)[0].count;
 
   res.json({

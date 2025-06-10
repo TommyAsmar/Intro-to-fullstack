@@ -21,22 +21,36 @@ usersRouter.get('/api', async (req, res) => {
   const limit = parseInt(req.query.usersLimit as string) || 5;
   const offset = (page - 1) * limit;
   const domain = (req.query.domain as string) || '';
+  const search = (req.query.search as string)?.toLowerCase() || '';
 
   let baseQuery = 'SELECT * FROM users';
   let countQuery = 'SELECT COUNT(*) as count FROM users';
+  const conditions: string[] = [];
   const params: any[] = [];
+  const countParams: any[] = [];
 
   if (domain) {
-    baseQuery += ' WHERE email LIKE ?';
-    countQuery += ' WHERE email LIKE ?';
+    conditions.push('email LIKE ?');
     params.push(`%${domain}`);
+    countParams.push(`%${domain}`);
+  }
+
+  if (search) {
+    conditions.push('(LOWER(name) LIKE ? OR LOWER(email) LIKE ?)');
+    params.push(`%${search}%`, `%${search}%`);
+    countParams.push(`%${search}%`, `%${search}%`);
+  }
+
+  if (conditions.length > 0) {
+    baseQuery += ' WHERE ' + conditions.join(' AND ');
+    countQuery += ' WHERE ' + conditions.join(' AND ');
   }
 
   baseQuery += ' LIMIT ? OFFSET ?';
   params.push(limit, offset);
 
   const [rows] = await db.query(baseQuery, params);
-  const [countRows] = await db.query(countQuery, domain ? [`%${domain}`] : []);
+  const [countRows] = await db.query(countQuery, countParams);
   const total = (countRows as any)[0].count;
 
   res.json({

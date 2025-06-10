@@ -37,10 +37,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var currentPage = 1;
 var limit = 5;
 var currentSort = 'asc'; // default sort order
+var loadedProjects = [];
 document.addEventListener('DOMContentLoaded', function () {
-    var _a;
+    var _a, _b;
     loadProjects(currentPage);
     (_a = document.getElementById('sortSelect')) === null || _a === void 0 ? void 0 : _a.addEventListener('change', applySort);
+    (_b = document.getElementById('searchInput')) === null || _b === void 0 ? void 0 : _b.addEventListener('input', function () {
+        applyProjectSearch();
+    });
 });
 function loadProjects(page) {
     return __awaiter(this, void 0, void 0, function () {
@@ -65,7 +69,8 @@ function loadProjects(page) {
                 case 3:
                     data = _a.sent();
                     projects = data.data || data;
-                    displayProjects(projects);
+                    loadedProjects = projects;
+                    displayProjects(loadedProjects);
                     setupProjectPagination(data.totalPages || 1);
                     return [3 /*break*/, 6];
                 case 4:
@@ -115,4 +120,11 @@ function applySort() {
     currentSort = select.value;
     currentPage = 1;
     loadProjects(currentPage);
+}
+function applyProjectSearch() {
+    var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    var filtered = loadedProjects.filter(function (project) {
+        return project.name.toLowerCase().includes(searchTerm);
+    });
+    displayProjects(filtered);
 }
