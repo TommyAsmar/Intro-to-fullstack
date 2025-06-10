@@ -15,6 +15,9 @@ async function loadProjects(page: number) {
     ? `/projects/api/user/${userId}?page=${page}&limit=${limit}&sort=${currentSort}`
     : `/projects/api?page=${page}&limit=${limit}&sort=${currentSort}`;
 
+    const loading = document.getElementById('loading')!;
+    loading.style.display = 'flex';
+
     try {
     const res = await fetch(url);
     const data = await res.json();
@@ -24,8 +27,10 @@ async function loadProjects(page: number) {
    }
     catch (err) {
      console.error('❌ Fetch error:', err);
-   }
+   } finally {
+    loading.style.display = 'none'; 
   }
+}
 
 function displayProjects(projects: any[]) {
   const projectList = document.getElementById('projectList')!;

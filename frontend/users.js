@@ -43,15 +43,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 function loadUsers(page) {
     return __awaiter(this, void 0, void 0, function () {
-        var domain, query, res, data, err_1;
+        var domain, query, loading, res, data, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     domain = document.getElementById('filterDomain').value;
                     query = "?page=".concat(page, "&usersLimit=").concat(usersLimit).concat(domain ? "&domain=".concat(encodeURIComponent(domain)) : '');
+                    loading = document.getElementById('loading');
+                    loading.style.display = 'flex';
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 4, , 5]);
+                    _a.trys.push([1, 4, 5, 6]);
                     return [4 /*yield*/, fetch("/users/api".concat(query))];
                 case 2:
                     res = _a.sent();
@@ -61,12 +63,15 @@ function loadUsers(page) {
                     loadedUsers = data.data;
                     displayUsers(loadedUsers);
                     setupPagination(data.totalPages || 1);
-                    return [3 /*break*/, 5];
+                    return [3 /*break*/, 6];
                 case 4:
                     err_1 = _a.sent();
                     console.error('❌ Fetch error:', err_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 5:
+                    loading.style.display = 'none';
+                    return [7 /*endfinally*/];
+                case 6: return [2 /*return*/];
             }
         });
     });

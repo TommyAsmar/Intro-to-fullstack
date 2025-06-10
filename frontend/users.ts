@@ -10,6 +10,9 @@ async function loadUsers(page: number) {
   const domain = (document.getElementById('filterDomain') as HTMLSelectElement).value;
   const query = `?page=${page}&usersLimit=${usersLimit}${domain ? `&domain=${encodeURIComponent(domain)}` : ''}`;
 
+  const loading = document.getElementById('loading')!;
+  loading.style.display = 'flex';
+
   try {
     const res = await fetch(`/users/api${query}`);
     const data = await res.json();
@@ -18,6 +21,8 @@ async function loadUsers(page: number) {
     setupPagination(data.totalPages || 1);
   } catch (err) {
     console.error('❌ Fetch error:', err);
+  } finally {
+    loading.style.display = 'none'; 
   }
 }
 

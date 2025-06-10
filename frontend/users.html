@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <title>Users</title>
     <link rel="stylesheet" href="users.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body>
     <div class="header-bar">
@@ -13,6 +17,13 @@
         <option value="@example.com">@example.com</option>
         <option value="@gmail.com">@gmail.com</option>
       </select>
+    </div>
+    <div
+      id="loading"
+      class="fa-spinner-wrapper"
+      style="display: none"
+    >
+      <i class="fas fa-spinner fa-spin fa-2x"></i>
     </div>
     <ul id="userList"></ul>
     <div id="pagination" style="margin-top: 10px"></div>

@@ -104,3 +104,11 @@ li {
 #filterDomain:hover {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
+.fa-spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  color: #3498db;
+}
