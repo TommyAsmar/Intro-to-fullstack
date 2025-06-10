@@ -1,13 +1,13 @@
 var _a;
-var currentPage = 1;
-var limit = 5;
+var usersCurrentPage = 1;
+var usersLimit = 5;
 var loadedUsers = [];
 document.addEventListener('DOMContentLoaded', function () {
-    loadUsers(currentPage);
+    loadUsers(usersCurrentPage);
 });
 function loadUsers(page) {
     var domain = document.getElementById('filterDomain').value;
-    var query = "?page=".concat(page, "&limit=").concat(limit).concat(domain ? "&domain=".concat(encodeURIComponent(domain)) : '');
+    var query = "?page=".concat(page, "&usersLimit=").concat(usersLimit).concat(domain ? "&domain=".concat(encodeURIComponent(domain)) : '');
     fetch("/users/api".concat(query))
         .then(function (res) { return res.json(); })
         .then(function (data) {
@@ -41,25 +41,25 @@ function setupPagination(totalPages) {
     pagination.innerHTML = '';
     var prev = document.createElement('button');
     prev.textContent = 'Prev';
-    prev.disabled = currentPage === 1;
+    prev.disabled = usersCurrentPage === 1;
     prev.onclick = function () {
-        currentPage--;
-        loadUsers(currentPage);
+        usersCurrentPage--;
+        loadUsers(usersCurrentPage);
     };
     var next = document.createElement('button');
     next.textContent = 'Next';
-    next.disabled = currentPage >= totalPages;
+    next.disabled = usersCurrentPage >= totalPages;
     next.onclick = function () {
-        currentPage++;
-        loadUsers(currentPage);
+        usersCurrentPage++;
+        loadUsers(usersCurrentPage);
     };
     pagination.appendChild(prev);
-    pagination.appendChild(document.createTextNode(" Page ".concat(currentPage, " of ").concat(totalPages, " ")));
+    pagination.appendChild(document.createTextNode(" Page ".concat(usersCurrentPage, " of ").concat(totalPages, " ")));
     pagination.appendChild(next);
 }
 function applyFilters() {
-    currentPage = 1;
-    loadUsers(currentPage);
+    usersCurrentPage = 1;
+    loadUsers(usersCurrentPage);
 }
 (_a = document.getElementById('filterDomain')) === null || _a === void 0 ? void 0 : _a.addEventListener('change', function () {
     applyFilters();

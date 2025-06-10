@@ -17,7 +17,7 @@ function loadProjects(page) {
         .then(function (data) {
         var projects = data.data || data;
         displayProjects(projects);
-        setupPagination(data.totalPages || 1);
+        setupProjectPagination(data.totalPages || 1);
     })
         .catch(function (err) { return console.error('❌ Fetch error:', err); });
 }
@@ -30,7 +30,7 @@ function displayProjects(projects) {
         projectList.appendChild(li);
     });
 }
-function setupPagination(totalPages) {
+function setupProjectPagination(totalPages) {
     var pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
     var prev = document.createElement('button');

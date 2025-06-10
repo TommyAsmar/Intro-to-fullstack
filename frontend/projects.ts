@@ -20,7 +20,7 @@ function loadProjects(page: number) {
     .then(data => {
       const projects = data.data || data;
       displayProjects(projects);
-      setupPagination(data.totalPages || 1);
+      setupProjectPagination(data.totalPages || 1);
     })
     .catch(err => console.error('❌ Fetch error:', err));
 }
@@ -36,7 +36,7 @@ function displayProjects(projects: any[]) {
   });
 }
 
-function setupPagination(totalPages: number) {
+function setupProjectPagination(totalPages: number) {
   const pagination = document.getElementById('pagination')!;
   pagination.innerHTML = '';
 

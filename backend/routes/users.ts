@@ -18,7 +18,7 @@ usersRouter.get('/', (req, res) => {
 
 usersRouter.get('/api', async (req, res) => {
   const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 5;
+  const limit = parseInt(req.query.usersLimit as string) || 5;
   const offset = (page - 1) * limit;
   const domain = (req.query.domain as string) || '';
 
